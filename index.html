@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teddy Dash Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</head>
+<body>
+    <h1>Happy Teddy Day, My Love! ❤️</h1>
+    <p>Move the teddy left and right to avoid the hugs!</p>
+
+    <div class="game-container">
+        <div id="player"></div> <!-- Teddy character -->
+        <div id="falling-object"></div> <!-- Falling heart -->
+    </div>
+
+    <p>Score: <span id="score">0</span></p>
+    <button id="install-btn" style="display: none;">Install Game</button>
+
+    <!-- ✅ Add Touch Controls for Mobile -->
+    <div class="controls">
+        <button id="left-btn">⬅️ Left</button>
+        <button id="right-btn">➡️ Right</button>
+    </div>
+
+    <script src="script.js"></script>
+
+    <!-- ✅ Fix: Add Install Button Logic -->
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById("install-btn");
+
+        // Step 1: Listen for "beforeinstallprompt" event
+        window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault(); // Prevent auto prompt
+            deferredPrompt = e; // Store the event
+            installBtn.style.display = "block"; // Show install button
+        });
+
+        // Step 2: When button is clicked, show install prompt
+        installBtn.addEventListener("click", () => {
+            deferredPrompt.prompt(); // Show prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === "accepted") {
+                    console.log("User installed the game"); // Log install success
+                }
+                deferredPrompt = null; // Reset prompt
+                installBtn.style.display = "none"; // Hide install button after use
+            });
+        });
+    </script>
+</body>
+</html>
